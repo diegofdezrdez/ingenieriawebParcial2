@@ -6,3 +6,4 @@ python-dotenv
 environs
 pydantic_settings
 httpx
+gunicorn
