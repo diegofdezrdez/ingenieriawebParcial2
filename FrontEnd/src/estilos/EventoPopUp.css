@@ -1,0 +1,132 @@
+/* =========================================
+   FONDO OSCURO (OVERLAY)
+========================================= */
+.evento-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Por encima de todo */
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* =========================================
+   TARJETA DEL POPUP
+========================================= */
+.evento-popup-card {
+    background: white;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh; /* Para que no se salga de pantallas pequeñas */
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Para que el header no se salga de las esquinas */
+}
+
+/* =========================================
+   CABECERA
+========================================= */
+.evento-popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #eee;
+    background-color: #fafafa;
+}
+
+.evento-popup-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.evento-popup-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.2s;
+}
+
+.evento-popup-close:hover {
+    color: #333;
+}
+
+/* =========================================
+   CUERPO CON SCROLL
+========================================= */
+.evento-popup-scroll {
+    flex: 1; /* Ocupa el espacio restante */
+    overflow-y: auto; /* Scroll vertical si hace falta */
+    padding: 1.5rem;
+}
+
+/* CAMPOS DE FORMULARIO */
+.ev-field {
+    margin-bottom: 1.2rem;
+}
+
+.ev-field label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+    color: #444;
+    font-size: 0.9rem;
+}
+
+.ev-field input[type="text"],
+.ev-field input[type="number"],
+.ev-field input[type="datetime-local"] {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box; /* Importante para que el padding no rompa el ancho */
+}
+
+.ev-field input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+/* DOS COLUMNAS */
+.ev-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* MAPA WRAPPER */
+.ev-map-wrapper {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* =========================================
+   PIE DE PAGINA (BOTONES)
+========================================= */
+.evento-popup-actions {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #eee;
+    background-color: #fafafa;
+    display: flex;
+    justify-content: flex-end; /* Botones a la derecha */
+    gap: 10px;
+}

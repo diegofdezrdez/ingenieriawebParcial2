@@ -1,0 +1,84 @@
+/* Quitar márgenes por defecto del body para que la barra pegue con los bordes */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+/* ======================================================
+   TOPBAR (Barra Superior)
+====================================================== */
+.home-topbar {
+  display: flex;
+  justify-content: space-between; /* Uno a la izq, otro a la der */
+  align-items: center;
+  
+  background-color: #333; /* Fondo oscuro */
+  color: white;
+  padding: 0.5rem 2rem;
+  
+  position: sticky; /* Se queda pegada arriba */
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  height: 60px; /* Altura fija para que quede elegante */
+}
+
+.topbar-logo {
+  font-size: 1.8rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* ======================================================
+   AJUSTES DEL COMPONENTE PERFIL (REUTILIZADO)
+====================================================== */
+/* Forzamos que el contenedor del perfil se ponga en fila horizontal */
+.topbar-perfil .perfil-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 0;
+  padding: 0;
+  text-align: right;
+}
+
+.topbar-perfil .perfil-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-direction: row-reverse; /* Foto a la derecha del texto */
+}
+
+/* Hacemos la foto más pequeñita */
+.topbar-perfil .perfil-avatar {
+  width: 40px !important;
+  height: 40px !important;
+  margin: 0 !important;
+  border: 2px solid white;
+}
+
+.topbar-perfil .perfil-nombre {
+  font-size: 0.9rem;
+  margin: 0;
+  color: white;
+}
+
+/* Ocultamos el email en la barra para que no ocupe espacio */
+.topbar-perfil .perfil-email {
+  display: none;
+}
+
+/* Botón de salir más discreto */
+.topbar-perfil .btn-logout {
+  margin-top: 0 !important;
+  padding: 5px 15px !important;
+  font-size: 0.8rem;
+}
+
+/* ======================================================
+   CONTENIDO
+====================================================== */
+.home-content {
+    padding: 2rem;
+}

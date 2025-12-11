@@ -1,0 +1,38 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* --- Estilos para la pantalla de Login --- */
+.login-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Ocupa toda la altura de la pantalla */
+  background-color: #f0f2f5; /* Un gris clarito de fondo */
+}
+
+.login-card {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px; /* Bordes redondeados */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombrita suave */
+  width: 100%;
+  max-width: 400px; /* Que no sea muy ancho */
+  text-align: center;
+}
+
+.login-title {
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-size: 1.5rem;
+}

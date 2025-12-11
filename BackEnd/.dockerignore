@@ -1,0 +1,15 @@
+# Carpetas de IDEs
+.vs
+.idea
+.env
+
+# Caché de Python
+__pycache__/
+
+# Archivos pyc generados
+*.pyc
+*.pyo
+
+# Otros archivos temporales opcionales
+*.swp
+.DS_Store

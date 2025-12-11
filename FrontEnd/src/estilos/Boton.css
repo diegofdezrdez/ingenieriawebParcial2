@@ -1,0 +1,53 @@
+/* ============================================
+   BASE DEL BOTÓN
+============================================ */
+.boton {
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.2s ease-in-out;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+/* ============================================
+   TIPO PRIMARIO (El normal, azul/verde)
+============================================ */
+.boton-primario {
+    padding: 0.6rem 1rem;
+    border-radius: 0.6rem;
+    background: #007bff; /* Azul estándar */
+    font-size: 1rem;
+}
+
+.boton-primario:hover {
+    background: #0056b3;
+    transform: scale(1.02);
+}
+
+/* ============================================
+   TIPO MINI ROJO (Para cancelar/borrar)
+============================================ */
+.boton-mini-rojo {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 0.4rem;
+    background: #c62828;
+    color: white;
+}
+
+.boton-mini-rojo:hover {
+    background: #b71c1c;
+}
+
+/* ============================================
+   ESTADO DESHABILITADO
+============================================ */
+.boton-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+}

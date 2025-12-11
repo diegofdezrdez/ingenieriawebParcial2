@@ -1,0 +1,15 @@
+# Ignorar dependencias de Node (Front)
+node_modules/
+dist/
+build/
+.env
+
+# Ignorar compilados de Java/Otros (Back)
+*.class
+*.log
+*.jar
+target/
+.idea/
+.vscode/
+__pycache__/
+venv/
