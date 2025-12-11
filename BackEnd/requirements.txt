@@ -7,3 +7,4 @@ environs
 pydantic_settings
 httpx
 gunicorn
+cloudinary
