@@ -7,7 +7,8 @@ import {
     UsuarioActualizar,
 } from "../esquemas/esquemas";
 
-const API = process.env.REACT_APP_BACKEND_URL;
+// Usamos la variable de entorno o localhost por defecto si falla
+const API = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 
 // ==============================
 //  Listar Parcial2
@@ -22,7 +23,19 @@ export async function listarParcial2(params?: {
 }): Promise<Parcial2Respuesta[] | null> {
 
     try {
-        const query = new URLSearchParams(params as any).toString();
+        // --- CORRECCIÓN: Limpiar parámetros undefined/null ---
+        const cleanParams: Record<string, string> = {};
+        
+        if (params) {
+            Object.entries(params).forEach(([key, value]) => {
+                // Solo añadimos al query string si tiene valor real
+                if (value !== undefined && value !== null && value !== "") {
+                    cleanParams[key] = String(value);
+                }
+            });
+        }
+
+        const query = new URLSearchParams(cleanParams).toString();
         const response = await fetch(`${API}/Parcial2?${query}`);
 
         if (!response.ok) {
@@ -37,7 +50,6 @@ export async function listarParcial2(params?: {
         return null;
     }
 }
-
 
 
 // ==============================
@@ -64,7 +76,6 @@ export async function crearParcial2(data: Parcial2Crear): Promise<Parcial2Respue
         return null;
     }
 }
-
 
 
 // ==============================
@@ -96,7 +107,6 @@ export async function modificarParcial2(
 }
 
 
-
 // ==============================
 //  Eliminar Parcial2
 // ==============================
@@ -119,7 +129,6 @@ export async function eliminarParcial2(id: string): Promise<boolean> {
         return false;
     }
 }
-
 
 
 // ==============================
@@ -165,7 +174,6 @@ export async function listarUsuarios(): Promise<UsuarioRespuesta[] | null> {
 }
 
 
-
 // ==============================
 //  Crear usuario
 // ==============================
@@ -190,7 +198,6 @@ export async function crearUsuario(data: UsuarioCrear): Promise<UsuarioRespuesta
         return null;
     }
 }
-
 
 
 // ==============================
@@ -222,7 +229,6 @@ export async function modificarUsuario(
 }
 
 
-
 // ==============================
 //  Eliminar usuario
 // ==============================
@@ -245,7 +251,6 @@ export async function eliminarUsuario(id: string): Promise<boolean> {
         return false;
     }
 }
-
 
 
 // ==============================
