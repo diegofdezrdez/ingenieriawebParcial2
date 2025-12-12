@@ -13,13 +13,16 @@ interface MapaProps {
   savedCoordinates?: { latitud: string; longitud: string }[];
   // Acción al hacer clic en el mapa (para poner el pin temporal)
   onMapClick?: (lat: number, lon: number) => void;
-  editable?: boolean; 
+  editable?: boolean;
+  // Para poder centrar el mapa desde el buscador del Home
+  centroExterno?: { lat: number, lon: number } | null; 
 }
 
 const Mapa: React.FC<MapaProps> = ({ 
     savedCoordinates = [],
     onMapClick,
-    editable = false 
+    editable = false,
+    centroExterno = null 
 }) => {
   
   const mapDivRef = useRef<HTMLDivElement>(null);
@@ -42,7 +45,7 @@ const Mapa: React.FC<MapaProps> = ({
     if (!document.getElementById(scriptId)) {
       const script = document.createElement('script');
       script.id = scriptId;
-      script.src = "http://www.openlayers.org/api/OpenLayers.js"; 
+      script.src = "https://cdnjs.cloudflare.com/ajax/libs/openlayers/2.13.1/OpenLayers.js"; 
       script.async = true;
       script.onload = () => iniciarMapa();
       document.body.appendChild(script);
@@ -58,8 +61,32 @@ const Mapa: React.FC<MapaProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [savedCoordinates, tempMarkerPos]);
 
+  // 3. CAMBIO: Escuchar cambios en centroExterno para mover el mapa O RESTAURARLO
+  useEffect(() => {
+    if (mapInstance.current && window.OpenLayers) {
+        const OpenLayers = window.OpenLayers;
+        
+        let lat = DEFAULT_LAT;
+        let lon = DEFAULT_LON;
+        let zoom = 12; // Zoom por defecto
+
+        // Si hay un centro externo definido (búsqueda activa), usamos esas coordenadas
+        if (centroExterno) {
+            lat = centroExterno.lat;
+            lon = centroExterno.lon;
+            zoom = 15; // Zoom más cercano al buscar
+        } 
+
+        const lonLat = new OpenLayers.LonLat(lon, lat)
+            .transform(new OpenLayers.Projection("EPSG:4326"), mapInstance.current.getProjectionObject());
+        
+        mapInstance.current.setCenter(lonLat, zoom);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [centroExterno]); // Se ejecuta cuando centroExterno cambia (a coordenadas o a null)
+
   // ===================================================================
-  // === FIXES DE RENDERIZADO Y SCROLL (Igual que antes) ===============
+  // === FIXES DE RENDERIZADO Y SCROLL =================================
   // ===================================================================
   useEffect(() => {
     if (mapInstance.current) {
@@ -92,7 +119,7 @@ const Mapa: React.FC<MapaProps> = ({
     const mapOptions = {
         controls: [new OpenLayers.Control.Navigation(), new OpenLayers.Control.PanZoom()],
         numZoomLevels: 20,
-        attribution: false // Intentar quitar atribución
+        attribution: false 
     };
 
     const map = new OpenLayers.Map(mapDivRef.current, mapOptions);
@@ -118,10 +145,8 @@ const Mapa: React.FC<MapaProps> = ({
                 new OpenLayers.Projection("EPSG:4326")
             );
 
-            // 1. Actualizamos el estado interno para mover el pin rojo
             setTempMarkerPos({ lat: transformed.lat, lon: transformed.lon });
             
-            // 2. Avisamos al padre de las nuevas coordenadas candidatas
             if (onMapClick) {
                 onMapClick(transformed.lat, transformed.lon);
             }
@@ -138,22 +163,26 @@ const Mapa: React.FC<MapaProps> = ({
       markersLayer.current.clearMarkers();
       const projection = mapInstance.current.getProjectionObject();
 
-      // 1. Dibujar marcadores YA GUARDADOS (Azules estándar)
+      // 1. Dibujar marcadores YA GUARDADOS
       savedCoordinates.forEach(coord => {
-        const lonLat = new OpenLayers.LonLat(parseFloat(coord.longitud), parseFloat(coord.latitud))
-            .transform(new OpenLayers.Projection("EPSG:4326"), projection);
-        // Marcador por defecto de OpenLayers
-        markersLayer.current.addMarker(new OpenLayers.Marker(lonLat));
+        // Parseamos a float para seguridad
+        const lat = parseFloat(coord.latitud);
+        const lon = parseFloat(coord.longitud);
+
+        if (!isNaN(lat) && !isNaN(lon)) {
+            const lonLat = new OpenLayers.LonLat(lon, lat)
+                .transform(new OpenLayers.Projection("EPSG:4326"), projection);
+            markersLayer.current.addMarker(new OpenLayers.Marker(lonLat));
+        }
       });
 
-      // 2. Dibujar marcador TEMPORAL (Pin Rojo personalizado)
+      // 2. Dibujar marcador TEMPORAL
       if (tempMarkerPos && editable) {
         const lonLat = new OpenLayers.LonLat(tempMarkerPos.lon, tempMarkerPos.lat)
             .transform(new OpenLayers.Projection("EPSG:4326"), projection);
         
-        // Configuración del icono personalizado
-        const size = new OpenLayers.Size(32, 32); // Tamaño del icono
-        const offset = new OpenLayers.Pixel(-(size.w / 2), -size.h); // El punto de anclaje (centro abajo)
+        const size = new OpenLayers.Size(32, 32); 
+        const offset = new OpenLayers.Pixel(-(size.w / 2), -size.h); 
         const icon = new OpenLayers.Icon(pinIcon, size, offset);
 
         markersLayer.current.addMarker(new OpenLayers.Marker(lonLat, icon));
@@ -163,14 +192,13 @@ const Mapa: React.FC<MapaProps> = ({
 
   return (
     <div style={{ width: "100%", marginBottom: "0" }}>
-        {/* SE HAN ELIMINADO EL BUSCADOR Y EL TEXTO INFERIOR */}
       <div 
         ref={mapDivRef}
         style={{ 
           width: "100%", 
-          height: "300px",  // Un poco más alto ahora que no tiene cosas alrededor
+          height: "350px", 
           border: "1px solid #ccc",
-          borderRadius: "8px", // Bordes redondeados completos
+          borderRadius: "8px", 
           backgroundColor: "#f0f0f0",
           overflow: "hidden", 
           position: "relative",

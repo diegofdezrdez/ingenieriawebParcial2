@@ -3,10 +3,18 @@ from pydantic import BaseModel, Field, model_validator
 from bson import ObjectId
 from typing import Optional
 
+# ===============================================
+#  Clases Auxiliares
+# ===============================================
+class Coordenada(BaseModel):
+    latitud: str
+    longitud: str
 
+# ===============================================
+#  USUARIOS
+# ===============================================
 class UsuarioCrear(BaseModel):
     id: str = Field(alias="_id")
-    #email: str = Field(..., min_length=5, max_length=50)
     email: str
     fechaLogueo: datetime = Field(default_factory=datetime.utcnow)
     fechaCaducidad: datetime
@@ -17,32 +25,17 @@ class UsuarioCrear(BaseModel):
         "populate_by_name": True,
         "json_schema_extra": {
             "example": {
-                "_id": "UID_FIREBASE_DEL_USUARIO",
-                "email": "usuario@email.com",
-                "alias": "Juan",
-                "foto": "https://foto.com/avatar.png",
-                "fechaLogueo": "2025-12-10T12:00:00Z",
-                "fechaCaducidad": "2025-12-10T13:00:00Z"
+                "_id": "UID_USER",
+                "email": "user@example.com",
+                "fechaCaducidad": "2025-12-12T12:00:00Z"
             }
         }
     }
-
 
 class UsuarioActualizar(BaseModel):
     alias: Optional[str] = None
     foto: Optional[str] = None
-    fechaCaducidad: Optional[datetime] = None  # por si quieres renovar la sesión
-
-    model_config = {
-        "json_schema_extra": {
-            "example": {
-                "alias": "NuevoAlias",
-                "foto": "https://imagen.com/nueva.png",
-                "fechaCaducidad": "2025-12-10T14:00:00Z"
-            }
-        }
-    }
-
+    fechaCaducidad: Optional[datetime] = None
 
 class UsuarioRespuesta(BaseModel):
     id: str = Field(alias="_id")
@@ -51,86 +44,87 @@ class UsuarioRespuesta(BaseModel):
     fechaCaducidad: datetime
     alias: Optional[str]
     foto: Optional[str]
-
-    model_config = {
-        "populate_by_name": True,
-        "json_schema_extra": {
-            "example": {
-                "_id": "656f1a01fee6ad04b5737204",
-                "email": "usuario@email.com",
-                "alias": "Juan",
-                "foto": "https://foto.com/avatar.png",
-                "fechaLogueo": "2025-12-10T12:00:00Z",
-                "fechaCaducidad": "2025-12-10T13:00:00Z"
-            }
-        }
-    }
+    model_config = {"populate_by_name": True}
 
 
-class Coordenada(BaseModel):
-    latitud: str
-    longitud: str
-
+# ===============================================
+#  RESEÑAS (Parcial2)
+# ===============================================
 
 class Parcial2Crear(BaseModel):
-    usuarioId: str = Field(..., description="UID Firebase del usuario dueño del Parcial2")
-    nombre: str = Field(..., min_length=5, max_length=50)
-    numero: int
+    # --- Identificación básica ---
+    usuarioId: str = Field(..., description="UID del usuario en la app")
+    
+    # --- Datos del Establecimiento ---
+    nombre: str = Field(..., min_length=1, max_length=100)
+    direccion: str = Field(..., min_length=1)
+    
+    # --- Datos de la Reseña ---
+    valoracion: int = Field(..., ge=0, le=5)
     fecha: datetime = Field(default_factory=datetime.utcnow)
-    booleana: bool = Field(default=False)
+    
+    # Coordenadas y Enlaces opcionales
     coordenadas: Optional[list[Coordenada]] = None
-    enlaces: Optional[list[str]] = None
+    enlaces: Optional[list[str]] = None 
+    
+    # --- Datos de Autoría/Token ---
+    # CAMBIO: Usamos str para evitar errores de validación con el formato de Firebase
+    autor_email: str
+    autor_nombre: str
+    token_id: str        
+    token_emision: str   
+    token_caducidad: str
 
     model_config = {
         "json_schema_extra": {
             "example": {
-                "nombre": "Mi Parcial Ejemplo",
-                "numero": 42,
-                "fecha": "2025-12-10T10:30:00Z",
-                "booleana": True,
-                "coordenadas": [
-                    {"latitud": "40.123", "longitud": "-3.234"},
-                    {"latitud": "41.456", "longitud": "-4.567"}
-                ],
-                "enlaces": ["https://ejemplo.com", "https://github.com"]
+                "usuarioId": "user123",
+                "nombre": "Casa Lola",
+                "direccion": "Calle Granada 46, Málaga",
+                "valoracion": 4,
+                "coordenadas": [{"latitud": "36.722", "longitud": "-4.418"}],
+                "autor_email": "pepe@gmail.com",
+                "autor_nombre": "Pepe",
+                "token_id": "eyJhbGciOi...",
+                "token_emision": "Fri, 12 Dec 2025...",
+                "token_caducidad": "Fri, 12 Dec 2025..."
             }
         }
     }
 
 class Parcial2Actualizar(BaseModel):
-    usuarioId: Optional[str] = None
     nombre: Optional[str] = None
-    numero: Optional[int] = None
-    fecha: Optional[datetime] = None
-    booleana: Optional[bool] = None
+    direccion: Optional[str] = None
+    valoracion: Optional[int] = Field(None, ge=0, le=5)
     coordenadas: Optional[list[Coordenada]] = None
     enlaces: Optional[list[str]] = None
-
+    
     model_config = {
         "json_schema_extra": {
             "example": {
-                "nombre": "Nuevo nombre",
-                "numero": 100,
-                "fecha": "2025-12-11T11:00:00Z",
-                "booleana": False,
-                "coordenadas": [
-                    {"latitud": "40.200", "longitud": "-3.300"}
-                ],
-                "enlaces": ["https://actualizado.com"]
+                "nombre": "Casa Lola (Centro)",
+                "valoracion": 5
             }
         }
     }
 
-
 class Parcial2Respuesta(BaseModel):
     id: str = Field(alias="_id")
     usuarioId: str
+    
     nombre: str
-    numero: int
+    direccion: str
+    valoracion: int
     fecha: datetime
-    booleana: bool
     coordenadas: Optional[list[Coordenada]]
     enlaces: Optional[list[str]]
+    
+    # Datos Token (Como string para visualizarlos tal cual vienen)
+    autor_email: str
+    autor_nombre: str
+    token_id: str
+    token_emision: str
+    token_caducidad: str
 
     @model_validator(mode="before")
     def convertir_id_a_str(cls, values):
@@ -139,18 +133,5 @@ class Parcial2Respuesta(BaseModel):
         return values
 
     model_config = {
-        "populate_by_name": True,
-        "json_schema_extra": {
-            "example": {
-                "_id": "656f1a01fee6ad04b5737204",
-                "nombre": "Mi Parcial Ejemplo",
-                "numero": 42,
-                "fecha": "2025-12-10T12:00:00Z",
-                "booleana": True,
-                "coordenadas": [
-                    {"latitud": "40.123", "longitud": "-3.234"}
-                ],
-                "enlaces": ["https://ejemplo.com"]
-            }
-        }
+        "populate_by_name": True
     }

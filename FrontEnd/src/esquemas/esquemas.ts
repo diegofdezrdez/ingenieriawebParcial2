@@ -3,10 +3,10 @@
 // ===============================================
 
 export interface UsuarioCrear {
-    _id: string;                // En el backend es alias "id"
+    _id: string;
     email: string;
-    fechaLogueo: string;        // En el backend es datetime → string ISO
-    fechaCaducidad: string;     // En el backend es datetime → string ISO
+    fechaLogueo: string;
+    fechaCaducidad: string;
     alias?: string | null;
     foto?: string | null;
 }
@@ -14,11 +14,11 @@ export interface UsuarioCrear {
 export interface UsuarioActualizar {
     alias?: string | null;
     foto?: string | null;
-    fechaCaducidad?: string; // Puede venir undefined
+    fechaCaducidad?: string;
 }
 
 export interface UsuarioRespuesta {
-    _id: string;                // Viene desde FastAPI ya convertido a string
+    _id: string;
     email: string;
     fechaLogueo: string;
     fechaCaducidad: string;
@@ -28,7 +28,7 @@ export interface UsuarioRespuesta {
 
 
 // ===============================================
-// ================ PARCIAL 2 =====================
+// ================ RESEÑAS (Antes Parcial2) =====
 // ===============================================
 
 export interface Coordenada {
@@ -38,31 +38,48 @@ export interface Coordenada {
 
 export interface Parcial2Crear {
     usuarioId: string;
+    
+    // Datos del Establecimiento
     nombre: string;
-    numero: number;
-    fecha: string;                      // datetime del backend → string ISO
-    booleana: boolean;
+    direccion: string;
+    valoracion: number; // 0 a 5
+    
+    fecha: string;
     coordenadas?: Coordenada[] | null;
     enlaces?: string[] | null;
+
+    // Datos de Autoría y Token
+    autor_email: string;
+    autor_nombre: string;
+    token_id: string;
+    token_emision: string;
+    token_caducidad: string;
 }
 
 export interface Parcial2Actualizar {
-    usuarioId?: string;
     nombre?: string;
-    numero?: number;
-    fecha?: string;
-    booleana?: boolean;
+    direccion?: string;
+    valoracion?: number;
     coordenadas?: Coordenada[] | null;
     enlaces?: string[] | null;
 }
 
 export interface Parcial2Respuesta {
-    _id: string;                        // Lo devuelve el backend como string
+    _id: string;
     usuarioId: string;
+    
     nombre: string;
-    numero: number;
+    direccion: string;
+    valoracion: number;
     fecha: string;
-    booleana: boolean;
+    
     coordenadas?: Coordenada[] | null;
     enlaces?: string[] | null;
+
+    // Datos extra para el detalle
+    autor_email: string;
+    autor_nombre: string;
+    token_id: string;
+    token_emision: string;
+    token_caducidad: string;
 }
